@@ -17,6 +17,10 @@ function Get-TargetResource
         $AppId,
 
         [Parameter()]
+        [System.String]
+        $ApplicationTemplateId,
+
+        [Parameter()]
         [System.Boolean]
         $AvailableToOtherTenants,
 
@@ -193,6 +197,7 @@ function Get-TargetResource
             }
             $result = @{
                 DisplayName             = $AADApp.DisplayName
+                ApplicationTemplateId   = $AADApp.ApplicationTemplateId
                 AvailableToOtherTenants = $AvailableToOtherTenantsValue
                 Description             = $AADApp.Description
                 GroupMembershipClaims   = $AADApp.GroupMembershipClaims
@@ -254,6 +259,10 @@ function Set-TargetResource
         [Parameter()]
         [System.String]
         $AppId,
+
+        [Parameter()]
+        [System.String]
+        $ApplicationTemplateId,
 
         [Parameter()]
         [System.Boolean]
@@ -687,6 +696,10 @@ function Test-TargetResource
         [Parameter()]
         [System.String]
         $AppId,
+
+        [Parameter()]
+        [System.String]
+        $ApplicationTemplateId,
 
         [Parameter()]
         [System.Boolean]
