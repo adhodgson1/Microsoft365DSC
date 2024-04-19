@@ -1,50 +1,57 @@
-﻿{
+{
     "resourceName": "AADApplication",
-    "description": "This resource configures an Azure Active Directory Application.",
-    "roles": {
-        "read": [
-            "Security Reader"
-        ],
-        "update": []
-    },
-    "permissions": {
-        "graph": {
-            "delegated": {
-                "read": [
-                    {
-                        "name": "Application.Read.All"
-                    }
-                ],
-                "update": [
-                    {
-                        "name": "Application.Read.All"
-                    },
-                    {
-                        "name": "Application.ReadWrite.All"
-                    },
-                    {
-                        "name": "User.Read.All"
-                    }
-                ]
-            },
-            "application": {
-                "read": [
-                    {
-                        "name": "Application.Read.All"
-                    }
-                ],
-                "update": [
-                    {
-                        "name": "Application.Read.All"
-                    },
-                    {
-                        "name": "Application.ReadWrite.All"
-                    },
-                    {
-                        "name": "User.Read.All"
-                    }
-                ]
-            }
-        }
-    }
+    "description": "This resource configures an Azure AD Application.",
+    "permissions":    {
+    "graph":  {
+                  "delegated":  {
+                                    "read":  [
+                                                 {
+                                                     "name":  "Application.Read.All"
+                                                 },
+                                                 {
+                                                     "name":  "Application.ReadWrite.OwnedBy"
+                                                 },
+                                                 {
+                                                     "name":  "Directory.Read.All"
+                                                 },
+                                                 {
+                                                     "name":  "User.Read"
+                                                 }
+                                             ],
+                                    "update":  [
+                                                   {
+                                                       "name":  "Application.ReadWrite.All"
+                                                   },
+                                                   {
+                                                       "name":  "Application.ReadWrite.OwnedBy"
+                                                   }
+                                               ]
+                                },
+                  "application":  {
+                                      "read":  [
+                                                   {
+                                                       "name":  "Application.Read.All"
+                                                   },
+                                                   {
+                                                       "name":  "Application.ReadWrite.OwnedBy"
+                                                   },
+                                                   {
+                                                       "name":  "Directory.Read.All"
+                                                   },
+                                                   {
+                                                       "name":  "User.Read"
+                                                   }
+                                               ],
+                                      "update":  [
+                                                     {
+                                                         "name":  "Application.ReadWrite.All"
+                                                     },
+                                                     {
+                                                         "name":  "Application.ReadWrite.OwnedBy"
+                                                     }
+                                                 ]
+                                  }
+              }
+}
+
 }

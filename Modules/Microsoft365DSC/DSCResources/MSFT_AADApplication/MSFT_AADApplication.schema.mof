@@ -1,35 +1,229 @@
 [ClassVersion("1.0.0")]
-class MSFT_AADApplicationPermission
+class MSFT_MicrosoftGraphAddIn
 {
-    [Write, Description("Name of the requested permission.")] String Name;
-    [Write, Description("Name of the API from which the permission comes from.")] String SourceAPI;
-    [Write, Description("Type of permission."), ValueMap{"AppOnly", "Delegated"}, Values{"AppOnly", "Delegated"}] String Type;
-    [Write, Description("Represented whether or not the Admin consent been granted on the app.")] Boolean AdminConsentGranted;
+    [Write, Description("")] String Id;
+    [Write, Description(""), EmbeddedInstance("MSFT_MicrosoftGraphKeyValue")] String Properties[];
+    [Write, Description("")] String Type;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphKeyValue
+{
+    [Write, Description("Key for the key-value pair.")] String Key;
+    [Write, Description("Value for the key-value pair.")] String Value;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphApiApplication
+{
+    [Write, Description("When true, allows an application to use claims mapping without specifying a custom signing key.")] Boolean AcceptMappedClaims;
+    [Write, Description("Used for bundling consent if you have a solution that contains two parts: a client app and a custom web API app. If you set the appID of the client app to this value, the user only consents once to the client app. Microsoft Entra ID knows that consenting to the client means implicitly consenting to the web API and automatically provisions service principals for both APIs at the same time. Both the client and the web API app must be registered in the same tenant.")] String KnownClientApplications[];
+    [Write, Description("The definition of the delegated permissions exposed by the web API represented by this application registration. These delegated permissions may be requested by a client application, and may be granted by users or administrators during consent. Delegated permissions are sometimes referred to as OAuth 2.0 scopes."), EmbeddedInstance("MSFT_MicrosoftGraphPermissionScope")] String Oauth2PermissionScopes[];
+    [Write, Description("Lists the client applications that are preauthorized with the specified delegated permissions to access this application's APIs. Users aren't required to consent to any preauthorized application (for the permissions specified). However, any other permissions not listed in preAuthorizedApplications (requested through incremental consent for example) will require user consent."), EmbeddedInstance("MSFT_MicrosoftGraphPreAuthorizedApplication")] String PreAuthorizedApplications[];
+    [Write, Description("Specifies the access token version expected by this resource. This changes the version and format of the JWT produced independent of the endpoint or client used to request the access token.  The endpoint used, v1.0 or v2.0, is chosen by the client and only impacts the version of id_tokens. Resources need to explicitly configure requestedAccessTokenVersion to indicate the supported access token format.  Possible values for requestedAccessTokenVersion are 1, 2, or null. If the value is null, this defaults to 1, which corresponds to the v1.0 endpoint.  If signInAudience on the application is configured as AzureADandPersonalMicrosoftAccount or PersonalMicrosoftAccount, the value for this property must be 2.")] UInt32 RequestedAccessTokenVersion;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphPermissionScope
+{
+    [Write, Description("A description of the delegated permissions, intended to be read by an administrator granting the permission on behalf of all users. This text appears in tenant-wide admin consent experiences.")] String AdminConsentDescription;
+    [Write, Description("The permission's title, intended to be read by an administrator granting the permission on behalf of all users.")] String AdminConsentDisplayName;
+    [Write, Description("Unique delegated permission identifier inside the collection of delegated permissions defined for a resource application.")] String Id;
+    [Write, Description("When you create or update a permission, this property must be set to true (which is the default). To delete a permission, this property must first be set to false.  At that point, in a subsequent call, the permission may be removed.")] Boolean IsEnabled;
+    [Write, Description("")] String Origin;
+    [Write, Description("The possible values are: User and Admin. Specifies whether this delegated permission should be considered safe for non-admin users to consent to on behalf of themselves, or whether an administrator consent should always be required. While Microsoft Graph defines the default consent requirement for each permission, the tenant administrator may override the behavior in their organization (by allowing, restricting, or limiting user consent to this delegated permission). For more information, see Configure how users consent to applications.")] String Type;
+    [Write, Description("A description of the delegated permissions, intended to be read by a user granting the permission on their own behalf. This text appears in consent experiences where the user is consenting only on behalf of themselves.")] String UserConsentDescription;
+    [Write, Description("A title for the permission, intended to be read by a user granting the permission on their own behalf. This text appears in consent experiences where the user is consenting only on behalf of themselves.")] String UserConsentDisplayName;
+    [Write, Description("Specifies the value to include in the scp (scope) claim in access tokens. Must not exceed 120 characters in length. Allowed characters are : ! # $ % & ' ( ) * + , - . / :   =       + _    } , and characters in the ranges 0-9, A-Z and a-z. Any other character, including the space character, aren't allowed. May not begin with ..")] String Value;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphPreAuthorizedApplication
+{
+    [Write, Description("The unique identifier for the application.")] String AppId;
+    [Write, Description("The unique identifier for the oauth2PermissionScopes the application requires.")] String DelegatedPermissionIds[];
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphAppRole
+{
+    [Write, Description("Specifies whether this app role can be assigned to users and groups (by setting to 'User'), to other application's (by setting to 'Application', or both (by setting to 'User', 'Application'). App roles supporting assignment to other applications' service principals are also known as application permissions. The 'Application' value is only supported for app roles defined on application entities.")] String AllowedMemberTypes[];
+    [Write, Description("The description for the app role. This is displayed when the app role is being assigned and, if the app role functions as an application permission, during  consent experiences.")] String Description;
+    [Write, Description("Display name for the permission that appears in the app role assignment and consent experiences.")] String DisplayName;
+    [Write, Description("Unique role identifier inside the appRoles collection. When creating a new app role, a new GUID identifier must be provided.")] String Id;
+    [Write, Description("When creating or updating an app role, this must be set to true (which is the default). To delete a role, this must first be set to false.  At that point, in a subsequent call, this role may be removed.")] Boolean IsEnabled;
+    [Write, Description("Specifies if the app role is defined on the application object or on the servicePrincipal entity. Must not be included in any POST or PATCH requests. Read-only.")] String Origin;
+    [Write, Description("Specifies the value to include in the roles claim in ID tokens and access tokens authenticating an assigned user or service principal. Must not exceed 120 characters in length. Allowed characters are : ! # $ % & ' ( ) * + , - . / :   =       + _    } , and characters in the ranges 0-9, A-Z and a-z. Any other character, including the space character, aren't allowed. May not begin with ..")] String Value;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphCertification
+{
+    [Write, Description("URL that shows certification details for the application.")] String CertificationDetailsUrl;
+    [Write, Description("The timestamp when the current certification for the application expires.")] String CertificationExpirationDateTime;
+    [Write, Description("Indicates whether the application is certified by Microsoft.")] Boolean IsCertifiedByMicrosoft;
+    [Write, Description("Indicates whether the application has been self-attested by the application developer or the publisher.")] Boolean IsPublisherAttested;
+    [Write, Description("The timestamp when the certification for the application was most recently added or updated.")] String LastCertificationDateTime;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphInformationalUrl
+{
+    [Write, Description("CDN URL to the application's logo, Read-only.")] String LogoUrl;
+    [Write, Description("Link to the application's marketing page. For example, https://www.contoso.com/app/marketing")] String MarketingUrl;
+    [Write, Description("Link to the application's privacy statement. For example, https://www.contoso.com/app/privacy")] String PrivacyStatementUrl;
+    [Write, Description("Link to the application's support page. For example, https://www.contoso.com/app/support")] String SupportUrl;
+    [Write, Description("Link to the application's terms of service statement. For example, https://www.contoso.com/app/termsofservice")] String TermsOfServiceUrl;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphKeyCredential
+{
+    [Write, Description("A 40-character binary type that can be used to identify the credential. Optional. When not provided in the payload, defaults to the thumbprint of the certificate.")] String CustomKeyIdentifier;
+    [Write, Description("Friendly name for the key. Optional.")] String DisplayName;
+    [Write, Description("The date and time at which the credential expires. The DateTimeOffset type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.")] String EndDateTime;
+    [Write, Description("The certificate's raw data in byte array converted to Base64 string. Returned only on $select for a single object, that is, GET applications/applicationId}$select=keyCredentials or GET servicePrincipals/servicePrincipalId}$select=keyCredentials otherwise, it is always null.  From a .cer certificate, you can read the key using the Convert.ToBase64String() method. For more information, see Get the certificate key.")] String Key;
+    [Write, Description("The unique identifier (GUID) for the key.")] String KeyId;
+    [Write, Description("The date and time at which the credential becomes valid.The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.")] String StartDateTime;
+    [Write, Description("The type of key credential for example, Symmetric, AsymmetricX509Cert.")] String Type;
+    [Write, Description("A string that describes the purpose for which the key can be used for example, Verify.")] String Usage;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphOptionalClaims
+{
+    [Write, Description("The optional claims returned in the JWT access token."), EmbeddedInstance("MSFT_MicrosoftGraphOptionalClaim")] String AccessToken[];
+    [Write, Description("The optional claims returned in the JWT ID token."), EmbeddedInstance("MSFT_MicrosoftGraphOptionalClaim")] String IdToken[];
+    [Write, Description("The optional claims returned in the SAML token."), EmbeddedInstance("MSFT_MicrosoftGraphOptionalClaim")] String Saml2Token[];
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphOptionalClaim
+{
+    [Write, Description("Additional properties of the claim. If a property exists in this collection, it modifies the behavior of the optional claim specified in the name property.")] String AdditionalProperties[];
+    [Write, Description("If the value is true, the claim specified by the client is necessary to ensure a smooth authorization experience for the specific task requested by the end user. The default value is false.")] Boolean Essential;
+    [Write, Description("The name of the optional claim.")] String Name;
+    [Write, Description("The source (directory object) of the claim. There are predefined claims and user-defined claims from extension properties. If the source value is null, the claim is a predefined optional claim. If the source value is user, the value in the name property is the extension property from the user object.")] String Source;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphParentalControlSettings
+{
+    [Write, Description("Specifies the two-letter ISO country codes. Access to the application will be blocked for minors from the countries specified in this list.")] String CountriesBlockedForMinors[];
+    [Write, Description("Specifies the legal age group rule that applies to users of the app. Can be set to one of the following values: ValueDescriptionAllowDefault. Enforces the legal minimum. This means parental consent is required for minors in the European Union and Korea.RequireConsentForPrivacyServicesEnforces the user to specify date of birth to comply with COPPA rules. RequireConsentForMinorsRequires parental consent for ages below 18, regardless of country minor rules.RequireConsentForKidsRequires parental consent for ages below 14, regardless of country minor rules.BlockMinorsBlocks minors from using the app.")] String LegalAgeGroupRule;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphPasswordCredential
+{
+    [Write, Description("Do not use.")] String CustomKeyIdentifier;
+    [Write, Description("Friendly name for the password. Optional.")] String DisplayName;
+    [Write, Description("The date and time at which the password expires represented using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Optional.")] String EndDateTime;
+    [Write, Description("Contains the first three characters of the password. Read-only.")] String Hint;
+    [Write, Description("The unique identifier for the password.")] String KeyId;
+    [Write, Description("Read-only Contains the strong passwords generated by Microsoft Entra ID that are 16-64 characters in length. The generated password value is only returned during the initial POST request to addPassword. There is no way to retrieve this password in the future.")] String SecretText;
+    [Write, Description("The date and time at which the password becomes valid. The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z. Optional.")] String StartDateTime;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphPublicClientApplication
+{
+    [Write, Description("Specifies the URLs where user tokens are sent for sign-in, or the redirect URIs where OAuth 2.0 authorization codes and access tokens are sent.")] String RedirectUris[];
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphRequestSignatureVerification
+{
+    [Write, Description("Specifies which weak algorithms are allowed.  The possible values are: rsaSha1, unknownFutureValue."), ValueMap{"rsaSha1","unknownFutureValue"}, Values{"rsaSha1","unknownFutureValue"}] String AllowedWeakAlgorithms;
+    [Write, Description("Specifies whether signed authentication requests for this application should be required.")] Boolean IsSignedRequestRequired;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphRequiredResourceAccess
+{
+    [Write, Description("The list of OAuth2.0 permission scopes and app roles that the application requires from the specified resource."), EmbeddedInstance("MSFT_MicrosoftGraphResourceAccess")] String ResourceAccess[];
+    [Write, Description("The unique identifier for the resource that the application requires access to. This should be equal to the appId declared on the target resource application.")] String ResourceAppId;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphResourceAccess
+{
+    [Write, Description("The unique identifier of an app role or delegated permission exposed by the resource application. For delegated permissions, this should match the id property of one of the delegated permissions in the oauth2PermissionScopes collection of the resource application's service principal. For app roles (application permissions), this should match the id property of an app role in the appRoles collection of the resource application's service principal.")] String Id;
+    [Write, Description("Specifies whether the id property references a delegated permission or an app role (application permission). The possible values are: Scope (for delegated permissions) or Role (for app roles).")] String Type;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphServicePrincipalLockConfiguration
+{
+    [Write, Description("Enables locking all sensitive properties. The sensitive properties are keyCredentials, passwordCredentials, and tokenEncryptionKeyId.")] Boolean AllProperties;
+    [Write, Description("Locks the keyCredentials and passwordCredentials properties for modification where credential usage type is Sign.")] Boolean CredentialsWithUsageSign;
+    [Write, Description("Locks the keyCredentials and passwordCredentials properties for modification where credential usage type is Verify. This locks OAuth service principals.")] Boolean CredentialsWithUsageVerify;
+    [Write, Description("Enables or disables service principal lock configuration. To allow the sensitive properties to be updated, update this property to false to disable the lock on the service principal.")] Boolean IsEnabled;
+    [Write, Description("Locks the tokenEncryptionKeyId property for modification on the service principal.")] Boolean TokenEncryptionKeyId;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphSpaApplication
+{
+    [Write, Description("Specifies the URLs where user tokens are sent for sign-in, or the redirect URIs where OAuth 2.0 authorization codes and access tokens are sent.")] String RedirectUris[];
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphVerifiedPublisher
+{
+    [Write, Description("The timestamp when the verified publisher was first added or most recently updated.")] String AddedDateTime;
+    [Write, Description("The verified publisher name from the app publisher's Partner Center account.")] String DisplayName;
+    [Write, Description("The ID of the verified publisher from the app publisher's Partner Center account.")] String VerifiedPublisherId;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphWebApplication
+{
+    [Write, Description("Home page or landing page of the application.")] String HomePageUrl;
+    [Write, Description("Specifies whether this web application can request tokens using the OAuth 2.0 implicit flow."), EmbeddedInstance("MSFT_MicrosoftGraphImplicitGrantSettings")] String ImplicitGrantSettings;
+    [Write, Description("Specifies the URL that is used by Microsoft's authorization service to log out a user using front-channel, back-channel or SAML logout protocols.")] String LogoutUrl;
+    [Write, Description("Specifies the URLs where user tokens are sent for sign-in, or the redirect URIs where OAuth 2.0 authorization codes and access tokens are sent.")] String RedirectUris[];
+    [Write, Description(""), EmbeddedInstance("MSFT_MicrosoftGraphRedirectUriSettings")] String RedirectUriSettings[];
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphImplicitGrantSettings
+{
+    [Write, Description("Specifies whether this web application can request an access token using the OAuth 2.0 implicit flow.")] Boolean EnableAccessTokenIssuance;
+    [Write, Description("Specifies whether this web application can request an ID token using the OAuth 2.0 implicit flow.")] Boolean EnableIdTokenIssuance;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphRedirectUriSettings
+{
+    [Write, Description("")] UInt32 Index;
+    [Write, Description("")] String Uri;
 };
 
 [ClassVersion("1.0.0.0"), FriendlyName("AADApplication")]
 class MSFT_AADApplication : OMI_BaseResource
 {
-    [Key, Description("DisplayName of the app")] string DisplayName;
-    [Write, Description("ObjectID of the app.")] String ObjectId;
-    [Write, Description("AppId for the app.")] String AppId;
-    [Write, Description("Indicates whether this application is available in other tenants.")] Boolean AvailableToOtherTenants;
-    [Write, Description("A free text field to provide a description of the application object to end users. The maximum allowed size is 1024 characters.")] String Description;
-    [Write, Description("A bitmask that configures the groups claim issued in a user or OAuth 2.0 access token that the application expects.")] String GroupMembershipClaims;
-    [Write, Description("The URL to the application's homepage.")] String Homepage;
-    [Write, Description("User-defined URI(s) that uniquely identify a Web application within its Azure AD tenant, or within a verified custom domain.")] string IdentifierUris[];
-    [Write, Description("Specifies the fallback application type as public client, such as an installed application running on a mobile device. The default value is false, which means the fallback application type is confidential client such as web app. There are certain scenarios where Microsoft Entra ID cannot determine the client application type (for example, ROPC flow where it is configured without specifying a redirect URI). In those cases, Microsoft Entra ID will interpret the application type based on the value of this property.")] Boolean IsFallbackPublicClient;
-    [Write, Description("Client applications that are tied to this resource application.")] string KnownClientApplications[];
-    [Write, Description("The logout url for this application.")] string LogoutURL;
-    [Write, Description("Specifies whether this application is a public client (such as an installed application running on a mobile device). Default is false.")] Boolean PublicClient;
-    [Write, Description("Specifies the URLs that user tokens are sent to for sign in, or the redirect URIs that OAuth 2.0 authorization codes and access tokens are sent to.")] String ReplyURLs[];
-    [Write, Description("UPN or ObjectID values of the app's owners.")] String Owners[];
-    [Write, Description("Specify if the Azure AD App should exist or not."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
-    [Write, Description("Credentials for the Microsoft Graph delegated permissions."), EmbeddedInstance("MSFT_Credential")] string Credential;
+    [Write, Description("Defines custom behavior that a consuming service can use to call an app in specific contexts. For example, applications that can render file streams can set the addIns property for its 'FileHandler' functionality. This lets services like Microsoft 365 call the application in the context of a document the user is working on."), EmbeddedInstance("MSFT_MicrosoftGraphaddIn")] String AddIns[];
+    [Write, Description("Specifies settings for an application that implements a web API."), EmbeddedInstance("MSFT_MicrosoftGraphapiApplication")] String Api;
+    [Write, Description("The unique identifier for the application that is assigned to an application by Microsoft Entra ID. Not nullable. Read-only. Alternate key. Supports $filter (eq).")] String AppId;
+    [Write, Description("Unique identifier of the applicationTemplate. Supports $filter (eq, not, ne). Read-only. null if the app wasn't created from an application template.")] String ApplicationTemplateId;
+    [Write, Description("The collection of roles defined for the application. With app role assignments, these roles can be assigned to users, groups, or service principals associated with other applications. Not nullable."), EmbeddedInstance("MSFT_MicrosoftGraphappRole")] String AppRoles[];
+    [Write, Description("Specifies the certification status of the application."), EmbeddedInstance("MSFT_MicrosoftGraphcertification")] String Certification;
+    [Write, Description("")] String DefaultRedirectUri;
+    [Write, Description("Free text field to provide a description of the application object to end users. The maximum allowed size is 1,024 characters. Supports $filter (eq, ne, not, ge, le, startsWith) and $search.")] String Description;
+    [Write, Description("Specifies whether Microsoft has disabled the registered application. Possible values are: null (default value), NotDisabled, and DisabledDueToViolationOfServicesAgreement (reasons include suspicious, abusive, or malicious activity, or a violation of the Microsoft Services Agreement).  Supports $filter (eq, ne, not).")] String DisabledByMicrosoftStatus;
+    [Required, Description("The display name for the application. Supports $filter (eq, ne, not, ge, le, in, startsWith, and eq on null values), $search, and $orderby.")] String DisplayName;
+    [Write, Description("Configures the groups claim issued in a user or OAuth 2.0 access token that the application expects. To set this attribute, use one of the following valid string values: None, SecurityGroup (for security groups and Microsoft Entra roles), All (this gets all of the security groups, distribution groups, and Microsoft Entra directory roles that the signed-in user is a member of).")] String GroupMembershipClaims;
+    [Write, Description("Also known as App ID URI, this value is set when an application is used as a resource app. The identifierUris acts as the prefix for the scopes you reference in your API's code, and it must be globally unique. You can use the default value provided, which is in the form api://application-client-id, or specify a more readable URI like https://contoso.com/api. For more information on valid identifierUris patterns and best practices, see Microsoft Entra application registration security best practices. Not nullable. Supports $filter (eq, ne, ge, le, startsWith).")] String IdentifierUris[];
+    [Write, Description("Basic profile information of the application such as  app's marketing, support, terms of service and privacy statement URLs. The terms of service and privacy statement are surfaced to users through the user consent experience. For more info, see How to: Add Terms of service and privacy statement for registered Microsoft Entra apps. Supports $filter (eq, ne, not, ge, le, and eq on null values)."), EmbeddedInstance("MSFT_MicrosoftGraphinformationalUrl")] String Info;
+    [Write, Description("Specifies whether this application supports device authentication without a user. The default is false.")] Boolean IsDeviceOnlyAuthSupported;
+    [Write, Description("Specifies the fallback application type as public client, such as an installed application running on a mobile device. The default value is false, which means the fallback application type is confidential client such as a web app. There are certain scenarios where Microsoft Entra ID can't determine the client application type. For example, the ROPC flow where it's configured without specifying a redirect URI. In those cases, Microsoft Entra ID interprets the application type based on the value of this property.")] Boolean IsFallbackPublicClient;
+    [Write, Description("The collection of key credentials associated with the application. Not nullable. Supports $filter (eq, not, ge, le)."), EmbeddedInstance("MSFT_MicrosoftGraphkeyCredential")] String KeyCredentials[];
+    [Write, Description("The main logo for the application. Not nullable.")] String Logo;
+    [Write, Description("Notes relevant for the management of the application.")] String Notes;
+    [Write, Description("")] Boolean Oauth2RequirePostResponse;
+    [Write, Description("Application developers can configure optional claims in their Microsoft Entra applications to specify the claims that are sent to their application by the Microsoft security token service. For more information, see How to: Provide optional claims to your app."), EmbeddedInstance("MSFT_MicrosoftGraphoptionalClaims")] String OptionalClaims;
+    [Write, Description("Specifies parental control settings for an application."), EmbeddedInstance("MSFT_MicrosoftGraphparentalControlSettings")] String ParentalControlSettings;
+    [Write, Description("The collection of password credentials associated with the application. Not nullable."), EmbeddedInstance("MSFT_MicrosoftGraphpasswordCredential")] String PasswordCredentials[];
+    [Write, Description("Specifies settings for installed clients such as desktop or mobile devices."), EmbeddedInstance("MSFT_MicrosoftGraphpublicClientApplication")] String PublicClient;
+    [Write, Description("The verified publisher domain for the application. Read-only. For more information, see How to: Configure an application's publisher domain. Supports $filter (eq, ne, ge, le, startsWith).")] String PublisherDomain;
+    [Write, Description("Specifies whether this application requires Microsoft Entra ID to verify the signed authentication requests."), EmbeddedInstance("MSFT_MicrosoftGraphrequestSignatureVerification")] String RequestSignatureVerification;
+    [Write, Description("Specifies the resources that the application needs to access. This property also specifies the set of delegated permissions and application roles that it needs for each of those resources. This configuration of access to the required resources drives the consent experience. No more than 50 resource services (APIs) can be configured. Beginning mid-October 2021, the total number of required permissions must not exceed 400. For more information, see Limits on requested permissions per app. Not nullable. Supports $filter (eq, not, ge, le)."), EmbeddedInstance("MSFT_MicrosoftGraphrequiredResourceAccess")] String RequiredResourceAccess[];
+    [Write, Description("The URL where the service exposes SAML metadata for federation. This property is valid only for single-tenant applications. Nullable.")] String SamlMetadataUrl;
+    [Write, Description("References application or service contact information from a Service or Asset Management database. Nullable.")] String ServiceManagementReference;
+    [Write, Description("Specifies whether sensitive properties of a multitenant application should be locked for editing after the application is provisioned in a tenant. Nullable. null by default."), EmbeddedInstance("MSFT_MicrosoftGraphservicePrincipalLockConfiguration")] String ServicePrincipalLockConfiguration;
+    [Write, Description("Specifies the Microsoft accounts that are supported for the current application. The possible values are: AzureADMyOrg (default), AzureADMultipleOrgs, AzureADandPersonalMicrosoftAccount, and PersonalMicrosoftAccount. See more in the table. The value of this object also limits the number of permissions an app can request. For more information, see Limits on requested permissions per app. The value for this property has implications on other app object properties. As a result, if you change this property, you might need to change other properties first. For more information, see Validation differences for signInAudience.Supports $filter (eq, ne, not).")] String SignInAudience;
+    [Write, Description("Specifies settings for a single-page application, including sign out URLs and redirect URIs for authorization codes and access tokens."), EmbeddedInstance("MSFT_MicrosoftGraphspaApplication")] String Spa;
+    [Write, Description("Custom strings that can be used to categorize and identify the application. Not nullable. Strings added here will also appear in the tags property of any associated service principals.Supports $filter (eq, not, ge, le, startsWith) and $search.")] String Tags[];
+    [Write, Description("Specifies the keyId of a public key from the keyCredentials collection. When configured, Microsoft Entra ID encrypts all the tokens it emits by using the key this property points to. The application code that receives the encrypted token must use the matching private key to decrypt the token before it can be used for the signed-in user.")] String TokenEncryptionKeyId;
+    [Write, Description("The unique identifier that can be assigned to an application and used as an alternate key. Immutable. Read-only.")] String UniqueName;
+    [Write, Description("Specifies the verified publisher of the application. For more information about how publisher verification helps support application security, trustworthiness, and compliance, see Publisher verification."), EmbeddedInstance("MSFT_MicrosoftGraphverifiedPublisher")] String VerifiedPublisher;
+    [Write, Description("Specifies settings for a web application."), EmbeddedInstance("MSFT_MicrosoftGraphwebApplication")] String Web;
+    [Write, Description("Date and time when this object was deleted. Always null when the object hasn't been deleted.")] String DeletedDateTime;
+    [Key, Description("The unique identifier for an entity. Read-only.")] String Id;
+    [Write, Description("Present ensures the policy exists, absent ensures it is removed."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] string Ensure;
+    [Write, Description("Credentials of the Admin"), EmbeddedInstance("MSFT_Credential")] string Credential;
     [Write, Description("Id of the Azure Active Directory application to authenticate with.")] String ApplicationId;
-    [Write, Description("Secret of the Azure Active Directory application to authenticate with."), EmbeddedInstance("MSFT_Credential")] String ApplicationSecret;
     [Write, Description("Id of the Azure Active Directory tenant used for authentication.")] String TenantId;
-    [Write, Description("API permissions for the Azure Active Directory Application."),EmbeddedInstance("MSFT_AADApplicationPermission")] String Permissions[];
+    [Write, Description("Secret of the Azure Active Directory tenant used for authentication."), EmbeddedInstance("MSFT_Credential")] String ApplicationSecret;
     [Write, Description("Thumbprint of the Azure Active Directory application's authentication certificate to use for authentication.")] String CertificateThumbprint;
     [Write, Description("Managed ID being used for authentication.")] Boolean ManagedIdentity;
 };
